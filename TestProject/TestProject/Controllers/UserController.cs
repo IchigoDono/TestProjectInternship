@@ -1,27 +1,30 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestProject.Services;
 
 namespace TestProject.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetUsers()
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            UserViewModel user = new UserViewModel()
-            {
-            };
-            return Ok(user);
+            _userService = userService;
         }
-    }
-    public class UserViewModel
-    {
-        public String Name { get; set; }
+
+        [Authorize]
+        [Route("api/UsersList")]
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            var result = _userService.GetUserList();
+            return Ok(result);
+        }
     }
 }

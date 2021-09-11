@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestProject.Services;
 
 namespace TestProject
 {
@@ -32,6 +33,7 @@ namespace TestProject
             string connection = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddControllers();
+            services.AddScoped<IUserService, UserService>();
             services.AddDbContext<ApplicationContext>(option => option.UseSqlServer(connection));
             services.AddSwaggerGen(c =>
             {
