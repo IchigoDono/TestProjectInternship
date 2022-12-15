@@ -4,25 +4,27 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using TestProject.ViewModels;
+using TasksTracker.Constant;
+using TasksTracker.Mapper;
+using TasksTracker.Models;
+using TasksTracker.ViewModels;
 
-namespace TestProject.Services
+namespace TasksTracker.Services
 {
     public class UserService : IUserService
     {
-        private readonly ApplicationContext _applicationContext;
-        public UserService(ApplicationContext applicationContext) 
+        private readonly TasksTrackerDBContext _applicationContext;
+        public UserService(TasksTrackerDBContext applicationContext) 
         {
             _applicationContext = applicationContext;
         }
 
 
-        public ResultViewModel Accountregistration(RegisterViewModel model) 
+        public ResultViewModel AccountRegistration(RegisterViewModel model) 
         {
             ResultViewModel result = new ResultViewModel();
 
-            bool existUser = _applicationContext.Users.Any(b => b.Login == model.Login);
+            bool existUser = _applicationContext.Users.Any(b => b.Email == model.Email);
             if (existUser == true)
             {
                 result.ErrorMessage ="Eror! Login Exist";
@@ -32,8 +34,9 @@ namespace TestProject.Services
             User user = new User()
             {
                 Name = model.Name,
-                Login = model.Login,
-                Password = model.Password
+                LastName = model.LastName,
+                Email = model.Email,
+                Password = model.Password,
             };
 
             _applicationContext.Users.Add(user);
@@ -45,7 +48,7 @@ namespace TestProject.Services
                 return result;
             }
 
-            return GetToken(model.Login, model.Password);
+            return GetToken(model.Email, model.Password);
         }
 
 
@@ -74,16 +77,23 @@ namespace TestProject.Services
             return result;
         }
 
-        public List<UserViewModel> GetUserList() 
+        public List<UserViewModel> GetUsersList() 
         {
-            List<UserViewModel> users = _applicationContext.Users.Select(s => new UserViewModel() { Name = s.Name, Login = s.Login }).ToList();
+            List<UserViewModel> users = _applicationContext.Users.Select(s => new UserViewModel() { Name = s.Name, Email = s.Email }).ToList();
 
             return users;
         }
 
+        public UserViewModel GetUser(string email)
+        {
+            User user = _applicationContext.Users.FirstOrDefault(s => s.Email == email);
+            UserViewModel userResult = UserMapper.UserViewModelMapper(user);
+            return userResult;
+        }
+
         ClaimsIdentity GetIdentity(string username, string password)
         {
-            var user = _applicationContext.Users.Any(x => x.Login == username && x.Password == password);
+            var user = _applicationContext.Users.Any(x => x.Email == username && x.Password == password);
             if (user == true)
             {
                 ClaimsIdentity claimsIdentity =

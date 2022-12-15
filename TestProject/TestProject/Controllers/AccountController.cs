@@ -1,18 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using TestProject.Services;
-using TestProject.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using TasksTracker.Services;
+using TasksTracker.ViewModels;
 
-namespace TestProject.Controllers
+namespace TasksTracker.Controllers
 {
     [ApiController]
     public class AccountController : ControllerBase
@@ -23,13 +13,13 @@ namespace TestProject.Controllers
             _userService = userService;
         }
 
-        [Route("api/Registration")]
-        [HttpPut] 
+        [Route("api/AccountRegistration")]
+        [HttpPut]
         public IActionResult Registration(RegisterViewModel model)
         {
-            ResultViewModel result = _userService.Accountregistration(model);
+            ResultViewModel result = _userService.AccountRegistration(model);
 
-            if (result.ErrorMessage != null) 
+            if (result.ErrorMessage != null)
             {
                 return BadRequest(result.ErrorMessage);
             }
@@ -50,6 +40,15 @@ namespace TestProject.Controllers
 
             return Ok(result.Token);
         }
-        
+
+
+        [Route("api/AccountInformation")]
+        [HttpGet]
+        public IActionResult GetInformation(string email)
+        {
+            UserViewModel result = _userService.GetUser(email);
+
+            return Ok();
+        }
     }
 }
