@@ -1,7 +1,8 @@
 ﻿namespace TasksTracker.Enums
 {
-    public enum CaseStatus
+    public enum TaskStatus
     {
+        Created = 0,
         Performed,
         Completed,
         Archival

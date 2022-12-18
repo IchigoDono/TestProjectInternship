@@ -29,6 +29,7 @@ namespace TasksTracker
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBoardService, BoardService>();
+            services.AddScoped<ITaskService, TaskService>();
             services.AddDbContext<TasksTrackerDBContext>(option => option.UseSqlServer(connection));
             services.AddSwaggerGen(c =>
             {

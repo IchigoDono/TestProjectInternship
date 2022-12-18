@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,22 +13,24 @@ namespace TasksTracker.Services
     public class BoardService : IBoardService
     {
         private readonly TasksTrackerDBContext _applicationContext;
-        public BoardService(TasksTrackerDBContext applicationContext) 
+        public BoardService(TasksTrackerDBContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
 
 
-        public ResultBoardViewModel BoardCreate(CreateBoardViewModel model) 
+        public ResultBoardViewModel BoardCreate(CreateBoardViewModel model)
         {
             ResultBoardViewModel result = new ResultBoardViewModel();
 
             bool existBoard = _applicationContext.Boards.Any(b => b.Name == model.Name);
             if (existBoard == true)
             {
-                result.ErrorMessage ="Eror! Login Exist";
+                result.ErrorMessage = "Eror! Login Exist";
                 return result;
             }
+
+            //var user = _applicationContext.Users.FirstOrDefault(s => s.UserId == model.UserId);
 
             Board board = new Board()
             {
@@ -38,7 +41,8 @@ namespace TasksTracker.Services
             };
 
             _applicationContext.Boards.Add(board);
-            int successfully = _applicationContext.SaveChanges();
+            _applicationContext.UserBoards.Add(new UserBoard() { Board = board, UserId = model.UserId });
+            var successfully = _applicationContext.SaveChanges();
 
             if (successfully == 0)
             {
@@ -49,12 +53,13 @@ namespace TasksTracker.Services
             return result;
         }
 
-        public List<ResultBoardViewModel> GetBoardList(string email)
+        public List<UserBoard> GetBoardList(string email)
         {
-           User user = _applicationContext.Users.FirstOrDefault(s => s.Email == email);
-           List<ResultBoardViewModel> users = _applicationContext.Users.Select(s => new ResultBoardViewModel() { Name = s.Name }).ToList();
+            List<UserBoard> result = _applicationContext.UserBoards.Include(s => s.User)
+                                                        .Include(s => s.Board)
+                                                        .Where(s => s.User.Email == email).ToList();
 
-            return users;
+            return result;
         }
 
 

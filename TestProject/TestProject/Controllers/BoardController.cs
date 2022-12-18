@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using TasksTracker.Services;
 using TasksTracker.ViewModels;
 
@@ -14,8 +15,8 @@ namespace TasksTracker.Controllers
         }
 
         [Route("api/CreateBoard")]
-        [HttpPut]
-        public IActionResult Create(CreateBoardViewModel model)
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateBoardViewModel model)
         {
             ResultBoardViewModel result = _boardService.BoardCreate(model);
 
@@ -28,12 +29,12 @@ namespace TasksTracker.Controllers
         }
 
 
-        [Route("api/UsersList")]
+        [Route("api/UserBoardsList")]
         [HttpGet]
-        public IActionResult ListUsers(string email)
+        public IActionResult ListUserBoards(string email)
         {
             var result = _boardService.GetBoardList(email);
-            return Ok(result);
+            return Ok(result.Select(s=> s.Board.Name).ToList());
         }
     }
 }

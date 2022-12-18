@@ -48,7 +48,7 @@ namespace TasksTracker.Controllers
         {
             UserViewModel result = _userService.GetUser(email);
 
-            return Ok();
+            return Ok(result);
         }
     }
 }

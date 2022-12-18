@@ -9,6 +9,7 @@ namespace TasksTracker.Models
     {
         public int UserId { get; set; }
         public int BoardId { get; set; }
+        public int UserBoardId { get; set; }
 
         public virtual Board Board { get; set; }
         public virtual User User { get; set; }

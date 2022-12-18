@@ -14,20 +14,20 @@ namespace TasksTracker.Services
     public class UserService : IUserService
     {
         private readonly TasksTrackerDBContext _applicationContext;
-        public UserService(TasksTrackerDBContext applicationContext) 
+        public UserService(TasksTrackerDBContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
 
 
-        public ResultViewModel AccountRegistration(RegisterViewModel model) 
+        public ResultViewModel AccountRegistration(RegisterViewModel model)
         {
             ResultViewModel result = new ResultViewModel();
 
             bool existUser = _applicationContext.Users.Any(b => b.Email == model.Email);
             if (existUser == true)
             {
-                result.ErrorMessage ="Eror! Login Exist";
+                result.ErrorMessage = "Eror! Login Exist";
                 return result;
             }
 
@@ -77,7 +77,7 @@ namespace TasksTracker.Services
             return result;
         }
 
-        public List<UserViewModel> GetUsersList() 
+        public List<UserViewModel> GetUsersList()
         {
             List<UserViewModel> users = _applicationContext.Users.Select(s => new UserViewModel() { Name = s.Name, Email = s.Email }).ToList();
 

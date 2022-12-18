@@ -97,8 +97,6 @@ namespace TasksTracker.Models
 
             modelBuilder.Entity<Task>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("Task");
 
                 entity.Property(e => e.CreationDate).HasColumnType("datetime");
@@ -110,18 +108,13 @@ namespace TasksTracker.Models
                     .HasMaxLength(10)
                     .IsFixedLength(true);
 
-                entity.Property(e => e.TaskId)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
-
                 entity.HasOne(d => d.Board)
-                    .WithMany()
+                    .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.BoardId)
                     .HasConstraintName("FK_Task_Board");
 
                 entity.HasOne(d => d.Category)
-                    .WithMany()
+                    .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_Task_Category");
             });
@@ -153,17 +146,15 @@ namespace TasksTracker.Models
 
             modelBuilder.Entity<UserBoard>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("UserBoard");
 
                 entity.HasOne(d => d.Board)
-                    .WithMany()
+                    .WithMany(p => p.UserBoards)
                     .HasForeignKey(d => d.BoardId)
                     .HasConstraintName("FK_UserBoard_Board");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.UserBoards)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_UserBoard_User");
             });

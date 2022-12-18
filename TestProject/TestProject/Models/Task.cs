@@ -7,7 +7,7 @@ namespace TasksTracker.Models
 {
     public partial class Task
     {
-        public string TaskId { get; set; }
+        public int TaskId { get; set; }
         public string Name { get; set; }
         public int BoardId { get; set; }
         public DateTime CreationDate { get; set; }

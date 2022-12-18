@@ -2,15 +2,17 @@
 
 namespace TasksTracker.ViewModels
 {
-    public class CreateBoardViewModel
+    public class CreateTaskViewModel
     {
         [Required]
         [StringLength(255, MinimumLength = 2)]
         public string Name { get; set; }
         [Required]
-        [StringLength(255, MinimumLength = 2)]
-        public string Description { get; set; }
+        public int BoardId { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public int Status { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
+
     }
 }

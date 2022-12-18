@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
@@ -9,6 +10,7 @@ namespace TasksTracker.Models
         public User()
         {
             Categories = new HashSet<Category>();
+            UserBoards = new HashSet<UserBoard>();
         }
 
         public int UserId { get; set; }
@@ -18,5 +20,6 @@ namespace TasksTracker.Models
         public string Password { get; set; }
 
         public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<UserBoard> UserBoards { get; set; }
     }
 }
