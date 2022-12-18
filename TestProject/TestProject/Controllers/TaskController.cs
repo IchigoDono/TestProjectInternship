@@ -74,7 +74,7 @@ namespace TasksTracker.Controllers
         }
 
         [Route("api/GetCategories")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetCategories()
         {
             string email = User.FindFirst(ClaimTypes.Email)?.Value;
