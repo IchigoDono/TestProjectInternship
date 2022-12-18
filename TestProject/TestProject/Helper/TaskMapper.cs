@@ -9,17 +9,8 @@ namespace TasksTracker.Helper
 {
     public class TaskMapper
     {
-        private readonly TasksTrackerDBContext _applicationContext;
-        public TaskMapper(TasksTrackerDBContext applicationContext)
+        public static TaskViewModel TasksMapper(List<Task> task)
         {
-            _applicationContext = applicationContext;
-        }
-        public TaskViewModel GetUserTasks(int boardId)
-        {
-            var task = _applicationContext.Tasks
-                            //.Include(s => s.Tasks)
-                            .Where(s => s.BoardId == boardId).ToList();
-
             TaskViewModel taskView = new TaskViewModel()
             {
                 CreatedList = task.Where(s => s.Status == (int)TaskStatus.Created).Select(s => new TaskItemViewModel

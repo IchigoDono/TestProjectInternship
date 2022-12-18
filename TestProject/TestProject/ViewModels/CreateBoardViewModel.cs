@@ -10,7 +10,5 @@ namespace TasksTracker.ViewModels
         [Required]
         [StringLength(255, MinimumLength = 2)]
         public string Description { get; set; }
-        [Required]
-        public int UserId { get; set; }
     }
 }

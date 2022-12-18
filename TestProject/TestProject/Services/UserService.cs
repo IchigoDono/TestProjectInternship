@@ -96,8 +96,9 @@ namespace TasksTracker.Services
             var user = _applicationContext.Users.Any(x => x.Email == username && x.Password == password);
             if (user == true)
             {
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(username, "Token", ClaimsIdentity.DefaultNameClaimType);
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Email, username));
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, username, "Token", ClaimsIdentity.DefaultNameClaimType);
                 return claimsIdentity;
             }
 

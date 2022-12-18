@@ -7,5 +7,6 @@ namespace TasksTracker.Services
         void CategoryCreate(CreateCategoryViewModel model);
         void TaskCreate(CreateTaskViewModel model);
         void UpdateTask(UpdateTaskViewModel model);
+        TaskViewModel GetUserTasks(int boardId);
     }
 }

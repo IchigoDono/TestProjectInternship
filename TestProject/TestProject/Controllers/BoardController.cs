@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
+using System.Security.Claims;
 using TasksTracker.Services;
 using TasksTracker.ViewModels;
 
@@ -18,23 +20,45 @@ namespace TasksTracker.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] CreateBoardViewModel model)
         {
-            ResultBoardViewModel result = _boardService.BoardCreate(model);
-
-            if (result.ErrorMessage != null)
+            try
             {
-                return BadRequest(result.ErrorMessage);
-            }
+                string email = User.FindFirst(ClaimTypes.Email)?.Value;
+                ResultBoardViewModel result = _boardService.BoardCreate(model, email);
 
-            return Ok();
+                if (result.ErrorMessage != null)
+                {
+                    return BadRequest(result.ErrorMessage);
+                }
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
         [Route("api/UserBoardsList")]
         [HttpGet]
-        public IActionResult ListUserBoards(string email)
+        public IActionResult ListUserBoards()
         {
-            var result = _boardService.GetBoardList(email);
-            return Ok(result.Select(s=> s.Board.Name).ToList());
+            try
+            {
+                string email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+                var result = _boardService.GetBoardList(email);
+                return Ok(result.Select(s => new
+                {
+                    Id = s.BoardId,
+                    Name = s.Board.Name
+                }
+                ).ToList());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

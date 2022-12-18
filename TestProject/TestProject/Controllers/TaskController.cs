@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using TasksTracker.Services;
 using TasksTracker.ViewModels;
 
@@ -14,13 +15,34 @@ namespace TasksTracker.Controllers
             _taskService = taskService;
         }
 
-        //[Authorize]
         [Route("api/CreateTask")]
         [HttpPost]
         public IActionResult CreateTask(CreateTaskViewModel createTaskModel)
         {
-            _taskService.TaskCreate(createTaskModel);
-            return Ok();
+            try
+            {
+                _taskService.TaskCreate(createTaskModel);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Route("api/CreateTask")]
+        [HttpPost]
+        public IActionResult GetUserTasks(int boardId)
+        {
+            try
+            {
+                _taskService.GetUserTasks(boardId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]
@@ -28,8 +50,15 @@ namespace TasksTracker.Controllers
         [HttpPost]
         public IActionResult UpdateTask(UpdateTaskViewModel updateTaskModel)
         {
-            _taskService.UpdateTask(updateTaskModel);
-            return Ok();
+            try
+            {
+                _taskService.UpdateTask(updateTaskModel);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]
@@ -37,8 +66,15 @@ namespace TasksTracker.Controllers
         [HttpPost]
         public IActionResult CreateCategory(CreateCategoryViewModel createCategoryModel)
         {
-            _taskService.CategoryCreate(createCategoryModel);
-            return Ok();
+            try
+            {
+                _taskService.CategoryCreate(createCategoryModel);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

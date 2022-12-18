@@ -19,7 +19,7 @@ namespace TasksTracker.Services
         }
 
 
-        public ResultBoardViewModel BoardCreate(CreateBoardViewModel model)
+        public ResultBoardViewModel BoardCreate(CreateBoardViewModel model, string email)
         {
             ResultBoardViewModel result = new ResultBoardViewModel();
 
@@ -30,7 +30,7 @@ namespace TasksTracker.Services
                 return result;
             }
 
-            //var user = _applicationContext.Users.FirstOrDefault(s => s.UserId == model.UserId);
+            var user = _applicationContext.Users.FirstOrDefault(s => s.Email == email);
 
             Board board = new Board()
             {
@@ -41,7 +41,7 @@ namespace TasksTracker.Services
             };
 
             _applicationContext.Boards.Add(board);
-            _applicationContext.UserBoards.Add(new UserBoard() { Board = board, UserId = model.UserId });
+            _applicationContext.UserBoards.Add(new UserBoard() { Board = board, UserId = user.UserId });
             var successfully = _applicationContext.SaveChanges();
 
             if (successfully == 0)

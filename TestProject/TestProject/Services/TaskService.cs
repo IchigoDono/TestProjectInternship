@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using TasksTracker.Enums;
+using TasksTracker.Helper;
 using TasksTracker.Models;
 using TasksTracker.ViewModels;
 
@@ -29,7 +30,14 @@ namespace TasksTracker.Services
             _applicationContext.Tasks.Add(task);
             _applicationContext.SaveChanges();
         }
-        public void UpdateTask(UpdateTaskViewModel model)
+
+        public TaskViewModel GetUserTasks(int boardId)
+        {
+            var task = _applicationContext.Tasks
+                            .Where(s => s.BoardId == boardId).ToList();
+            return TaskMapper.TasksMapper(task);
+        }
+            public void UpdateTask(UpdateTaskViewModel model)
         {
             Task task = _applicationContext.Tasks.FirstOrDefault(s => s.TaskId == model.TaskId);
             task.LastUpdate = DateTime.Now;
