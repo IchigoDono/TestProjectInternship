@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using TasksTracker.Services;
 using TasksTracker.ViewModels;
 
@@ -30,14 +32,14 @@ namespace TasksTracker.Controllers
             }
         }
 
-        [Route("api/CreateTask")]
+        [Route("api/GetUserTasks")]
         [HttpPost]
         public IActionResult GetUserTasks(int boardId)
         {
             try
             {
-                _taskService.GetUserTasks(boardId);
-                return Ok();
+                var tasks = _taskService.GetUserTasks(boardId);
+                return Ok(tasks);
             }
             catch (Exception ex)
             {
@@ -66,15 +68,24 @@ namespace TasksTracker.Controllers
         [HttpPost]
         public IActionResult CreateCategory(CreateCategoryViewModel createCategoryModel)
         {
-            try
+            string email = User.FindFirst(ClaimTypes.Email)?.Value;
+            _taskService.CategoryCreate(createCategoryModel, email);
+            return Ok(new { success = true });
+        }
+
+        [Route("api/GetCategories")]
+        [HttpPost]
+        public IActionResult GetCategories()
+        {
+            string email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            var categories = _taskService.GetCategories(email);
+            return Ok(categories.Select(s => new
             {
-                _taskService.CategoryCreate(createCategoryModel);
-                return Ok();
+                Id = s.CategoryId,
+                Name = s.Name
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            ).ToList());
         }
     }
 }

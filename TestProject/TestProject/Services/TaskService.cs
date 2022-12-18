@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TasksTracker.Enums;
 using TasksTracker.Helper;
@@ -46,18 +47,27 @@ namespace TasksTracker.Services
             task.Status = model.Status;
             _applicationContext.Update(task);
         }
-        public void CategoryCreate(CreateCategoryViewModel model)
+        public void CategoryCreate(CreateCategoryViewModel model, string email)
         {
+            var user = _applicationContext.Users.FirstOrDefault(s => s.Email == email);
+
             Category category = new Category()
             {
                 Name = model.Name,
-                UserId = model.UserId
+                UserId = user.UserId
             };
 
             _applicationContext.Categories.Add(category);
             _applicationContext.SaveChanges();
         }
 
+        public List<Category> GetCategories(string email)
+        {
+            List<Category> result = _applicationContext.Categories.Include(s => s.User)
+                                            .Where(s => s.User.Email == email).ToList();
+
+            return result;
         }
+    }
     }
 
